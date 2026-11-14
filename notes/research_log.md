@@ -27,7 +27,11 @@ Build a small navigation environment with ambiguous locations and noisy observat
 
 ### Results
 
-as expected, all test passed
+Ran pytest -q. All five tests passed.
+
+The tests confirm that the movement rules, observation probabilities, and seeded sampling behave as intended.
+
+This verifies the basic env't implementation. It does not yet tell us whether an agent can infer its location from noisy observations.
 
 ### Limitations
 
@@ -39,4 +43,4 @@ Implement Bayesian filtering to estimate location from action and observation hi
 
 ### Problems and corrections
 
-nothing so far
+no implementation problems encountered so far.
