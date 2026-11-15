@@ -83,7 +83,7 @@ Implemented the Bayesian observation update. It combines the prior belief with t
 
 For example, with equal prior probabilities at positions 1 and 3, observing C increases the probability of position 3 to approximately 88.9%.
 
-Checks
+### Checks
 
 Observing C favors position 3 over position 1
 
@@ -95,29 +95,29 @@ Invalid observations are rejected
 
 All existing tests still pass
 
-Results
+### Results
 
 All nine Bayesian-filter tests passed, including the four new observation-update tests.
 
 The results matched our hand calculations. Observing C produced approximately 11.1% probability for position 1 and 88.9% for position 3. Observing A left the equal belief between positions 0 and 2 unchanged.
 
-Limitations
+### Limitations
 
 The observation probabilities are fixed and known to the Bayesian observer. We haven't tested the filter across full trajectories or compared its estimates with the true positions.
 
-Next step
+### Next step
 
 Run the Bayesian filter over simulated trajectories and examine how its belief changes with movement and observations.
 
-Part 3: Bayesian filtering over a trajectory
+### Part 3: Bayesian filtering over a trajectory
 
-Date: Nov 15, 2026
+### Date: Nov 15, 2026
 
-Goal
+### Goal
 
 Run the Bayesian filter over several movements and observations to see how its belief changes over time.
 
-Setup
+### Setup
 
 Four-state environment from Experiment 01
 
@@ -131,7 +131,7 @@ Random seed: 42
 
 Exact movement and known observation probabilities
 
-Results
+### Results
 
 The filter updated its belief across the trajectory using movement and visual observations.
 
@@ -151,12 +151,122 @@ This happened because the previous belief strongly favored position 1. After mov
 
 This shows why considering movement and observation history matters. The filter does not simply choose the position associated with the latest observation.
 
-Limitations
+### Limitations
 
 The Bayesian observer knows the observation probabilities and movement rules. Movement is exact, and the environment contains only four positions.
 
 This is an ideal observer for our simplified environment, not a reproduction of the full Bayesian observer in Kim and Kang's paper.
 
-Next step
+### Next step
 
 Evaluate the filter across multiple trajectories to examine location accuracy and how its uncertainty changes with noisy or ambiguous observations.
+
+Part 4: Evaluation across multiple trajectories
+
+Date: November 15, 2026
+
+Setup:
+
+200 trajectories, 20 movements each
+
+4,200 evaluated observations
+
+Random initial positions and actions
+
+Seed: 42
+
+Python 3.12.8, NumPy 2.5.4
+
+Results:
+
+Metric
+
+Result
+
+Location accuracy
+
+92.05%
+
+Mean probability of true position
+
+89.67%
+
+Mean confidence
+
+92.27%
+
+Mean entropy
+
+0.185 nats
+
+Mean log loss
+
+0.195
+
+Errors with ≥90% confidence
+
+20
+
+The filter correctly identified the location in 3,866 of 4,200 observations. However, it made 20 errors with confidence of at least 90%.
+
+This shows that even an ideal observer can make confident mistakes when observations are noisy. The aggregate results alone do not establish probability calibration.
+
+Overall findings
+
+The Bayesian filter combines movement and observation history to estimate location. It can resolve ambiguous observations, retain useful prior information, and adjust uncertainty when new evidence conflicts with previous beliefs.
+
+Limitations
+
+The observer knows the correct movement and observation models. The environment is small, movement is exact, and observations within each trajectory are correlated.
+
+No neural network has been trained. These experiments demonstrate Bayesian filtering in a simplified environment, not a reproduction of Kim and Kang's work.
+
+Next steps
+
+Examine location errors and uncertainty over time.
+
+Evaluate variation across trajectories and random seeds.
+
+Build matched predictive and reconstruction networks using the same environment.
+
+### Part 4: Evaluation across multiple trajectories
+
+**Date:** November 15, 2026
+
+**Setup:**
+- 200 trajectories, 20 movements each
+- 4,200 evaluated observations
+- Random initial positions and actions
+- Seed: 42
+- Python 3.12.8, NumPy 2.5.4
+
+**Results:**
+
+| Metric | Result |
+|---|---:|
+| Location accuracy | 92.05% |
+| Mean probability of true position | 89.67% |
+| Mean confidence | 92.27% |
+| Mean entropy | 0.185 nats |
+| Mean log loss | 0.195 |
+| Errors with ≥90% confidence | 20 |
+
+The filter correctly identified the location in 3,866 of 4,200 observations. However, it made 20 errors with confidence of at least 90%.
+
+This shows that even an ideal observer can make confident mistakes when observations are noisy. The aggregate results alone do not establish probability calibration.
+
+### Overall findings
+
+The Bayesian filter combines movement and observation history to estimate location. It can resolve ambiguous observations, retain useful prior information, and adjust uncertainty when new evidence conflicts with previous beliefs.
+
+### Limitations
+
+The observer knows the correct movement and observation models. The environment is small, movement is exact, and observations within each trajectory are correlated.
+
+No neural network has been trained. These experiments demonstrate Bayesian filtering in a simplified environment, not a reproduction of Kim and Kang's work.
+
+### Next steps
+
+1. Examine location errors and uncertainty over time.
+2. Evaluate variation across trajectories and random seeds.
+3. Build matched predictive and reconstruction networks using the same environment.
