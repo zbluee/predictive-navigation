@@ -95,3 +95,21 @@ def test_ambiguous_observation_preserves_prior():
     result = update_belief(belief, "A", world)
 
     np.testing.assert_allclose(result, belief)
+
+def test_prediction_and_update_together():
+    world = RingWorld()
+
+    belief = np.full(4, 0.25)
+
+    # Observe A at the initial time.
+    belief = update_belief(belief, "A", world)
+
+    # Move forward.
+    belief = predict_belief(belief, 1)
+
+    # Observe B at the new position.
+    belief = update_belief(belief, "B", world)
+
+    expected = np.array([1, 64, 1, 8]) / 74
+
+    np.testing.assert_allclose(belief, expected)

@@ -108,3 +108,55 @@ The observation probabilities are fixed and known to the Bayesian observer. We h
 Next step
 
 Run the Bayesian filter over simulated trajectories and examine how its belief changes with movement and observations.
+
+Part 3: Bayesian filtering over a trajectory
+
+Date: Nov 15, 2026
+
+Goal
+
+Run the Bayesian filter over several movements and observations to see how its belief changes over time.
+
+Setup
+
+Four-state environment from Experiment 01
+
+Initial belief: uniform across all four positions
+
+Initial true position: 0 (known only to the simulator)
+
+Actions: [1, 1, 1, 0, -1, 1, 1]
+
+Random seed: 42
+
+Exact movement and known observation probabilities
+
+Results
+
+The filter updated its belief across the trajectory using movement and visual observations.
+
+One interesting case occurred at t = 2:
+
+True position: 2
+
+Observation: B
+
+Most likely position: 2
+
+Posterior probability: approximately 79%
+
+Although B is more likely at position 1, the filter still assigned 79% probability to position 2.
+
+This happened because the previous belief strongly favored position 1. After moving forward, that probability shifted to position 2. The new observation B provided conflicting evidence, but it wasn't enough to outweigh the prior belief.
+
+This shows why considering movement and observation history matters. The filter does not simply choose the position associated with the latest observation.
+
+Limitations
+
+The Bayesian observer knows the observation probabilities and movement rules. Movement is exact, and the environment contains only four positions.
+
+This is an ideal observer for our simplified environment, not a reproduction of the full Bayesian observer in Kim and Kang's paper.
+
+Next step
+
+Evaluate the filter across multiple trajectories to examine location accuracy and how its uncertainty changes with noisy or ambiguous observations.
