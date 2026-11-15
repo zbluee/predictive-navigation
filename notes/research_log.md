@@ -270,3 +270,29 @@ No neural network has been trained. These experiments demonstrate Bayesian filte
 1. Examine location errors and uncertainty over time.
 2. Evaluate variation across trajectories and random seeds.
 3. Build matched predictive and reconstruction networks using the same environment.
+
+### Part 5: High-confidence error analysis
+
+**Date:** November 15, 2026
+
+**Goal:** Examine why the Bayesian filter makes confident errors and how those errors persist.
+
+### Results
+
+Of 3,157 predictions with at least 90% confidence, 20 were incorrect (0.63%). These occurred in 7 of 200 trajectories.
+
+Episode 126 had six consecutive high-confidence errors (t=5–10). A misleading observation reinforced an incorrect belief, while subsequent ambiguous observations failed to correct it.
+
+At t=11, a more informative observation increased the probability assigned to the true position from 1.54% to 11.11%. However, the filter still predicted the wrong position at t=12.
+
+### Interpretation
+
+Incorrect beliefs can persist when observations provide insufficient evidence to distinguish locations. New evidence can reduce confidence in an incorrect estimate without immediately correcting it.
+
+### Limitations
+
+Errors within trajectories are correlated. We have not measured recovery times across all trajectories or evaluated calibration.
+
+### Next step
+
+Evaluate performance across multiple random seeds before introducing predictive and reconstruction networks.
