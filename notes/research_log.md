@@ -296,3 +296,26 @@ Errors within trajectories are correlated. We have not measured recovery times a
 ### Next step
 
 Evaluate performance across multiple random seeds before introducing predictive and reconstruction networks.
+
+## Experiment 03: Predictive and reconstruction learning
+
+**Date:** Nov 17, 2026
+
+### Part 1: Dataset preparation
+
+**Goal:** Prepare fixed trajectories for comparing predictive and reconstruction learning.
+
+**Setup:**
+- Training: 600 trajectories (seed 100)
+- Validation: 100 trajectories (seed 101)
+- Test: 100 trajectories (seed 102)
+- 20 movements and 21 observations per trajectory
+- Same four-state environment and observation model
+
+**Results:**
+
+*Complete after generating the datasets and running the tests.*
+
+**Limitations:** All trajectories come from the same simplified environment. The splits test performance on new trajectories, not generalization to different environments.
+
+**Next step:** Implement a small recurrent network and train it to predict the next observation.
