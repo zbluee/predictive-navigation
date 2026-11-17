@@ -319,3 +319,115 @@ Evaluate performance across multiple random seeds before introducing predictive 
 **Limitations:** All trajectories come from the same simplified environment. The splits test performance on new trajectories, not generalization to different environments.
 
 **Next step:** Implement a small recurrent network and train it to predict the next observation.
+
+### Part 2: Recurrent model
+
+**Date:** Nov 17, 2026
+
+**Goal:** Build a small recurrent model for processing observation and movement history.
+
+**Implementation:** GRU with 16 hidden units and a linear output layer predicting probabilities over three observation categories.
+
+**Results:** Complete after testing the forward pass, sequence shapes, gradient computation, and absence of future-observation leakage.
+
+**Limitations:** The model is untrained. We have not evaluated prediction accuracy or whether the hidden states encode location.
+
+**Next step:** Train the predictive network on the prepared trajectories and evaluate next-observation prediction on the validation set.
+
+### Part 3: Predictive network training
+
+**Date:** Nov 17, 2026
+
+**Goal:** Train a small GRU to predict the next observation using observation and movement history.
+
+**Setup:**
+- GRU with 16 hidden units
+- Adam optimizer, learning rate 0.003
+- Batch size 64, maximum 30 epochs
+- Model seed 7
+- 600 training and 100 validation trajectories
+- Best checkpoint selected by validation cross-entropy
+
+**Results:**
+
+*Record the best validation loss, accuracy, baseline comparison, and selected epoch after running.*
+
+**Limitations:** Prediction performance alone does not show whether the hidden states represent position or uncertainty.
+
+**Next step:** Examine the learning curves and compare against a non-recurrent predictor before training the reconstruction control.
+
+### Part 4: Extended training and architecture comparison
+
+**Date:** Nov 17, 2026
+
+**Goal:** Investigate why the predictive GRU underperformed the conditional baseline.
+
+### Results
+
+Extending the original GRU to 120 epochs gave a best validation loss of 1.0262 and 44.75% accuracy, still below the conditional baseline (0.9355, 58.05%).
+
+Replacing the linear prediction head with an MLP improved validation loss to **0.7716** and accuracy to **71.85%**, with the best checkpoint at epoch 48.
+
+Validation loss increased after the best checkpoint while training loss continued decreasing, suggesting overfitting.
+
+### Interpretation
+
+The more expressive prediction head substantially improved next-observation prediction. However, the result does not establish that recurrent memory or Bayesian-like location representations caused the improvement.
+
+### Next step
+
+Compare against a non-recurrent MLP using the same current observation and upcoming action to isolate the benefit of recurrent history.
+
+### Part 5: Feedforward comparison
+
+**Date:** Nov 17, 2026
+
+**Goal:** Test whether access to observation and movement history improves next-observation prediction.
+
+**Setup:** Compared the predictive GRU (1,939 parameters) with a feedforward MLP (2,043 parameters), using the same training and validation data, optimizer, learning rate, batch size, seed, and 120-epoch budget.
+
+### Results
+
+The feedforward MLP achieved **0.9341 validation loss and 57.35% accuracy** at epoch 47, close to the conditional baseline (0.9355 loss, 58.05% accuracy).
+
+The GRU + MLP performed substantially better, achieving **0.7716 loss and 71.85% accuracy**.
+
+### Interpretation
+
+The results suggest that observation and movement history provide useful information for predicting future observations. However, we haven't directly tested what the recurrent hidden states represent.
+
+### Limitations
+
+The models have similar parameter counts but different architectures. Results are from one model seed and one validation split.
+
+### Next step
+
+Test whether disrupting the GRU's history reduces prediction performance, then train the matched reconstruction control.
+
+### Part 6: Recurrent memory ablation
+
+**Date:** Nov 17, 2026
+
+**Goal:** Test whether the trained predictive GRU depends on recurrent memory.
+
+**Results:** Resetting the hidden state at every step reduced validation accuracy from 71.85% to 58.35% and increased loss from 0.7716 to 0.9574.
+
+**Interpretation:** The trained GRU relies on information carried across time for prediction.
+
+**Limitation:** Resetting memory changes the conditions encountered during training. The result does not establish that the hidden state represents Bayesian location beliefs.
+
+**Next step:** Train a reconstruction GRU with the same architecture and inputs.
+
+### Part 7: Reconstruction network
+
+**Date:** Nov 17, 2026
+
+**Goal:** Train a reconstruction GRU as a control for the predictive-learning experiment.
+
+**Setup:** Same GRU + MLP architecture (1,939 parameters), dataset, optimizer, batch size, seed and 120-epoch budget as the predictive model. The target was changed from the next observation to the current observation.
+
+**Results:** Reconstruction accuracy reached 100% by epoch 5. The best checkpoint was at epoch 120, with 100% validation accuracy and near-zero cross-entropy loss.
+
+**Interpretation:** The reconstruction model successfully learned to reproduce its current observation. Because the target was already available as input, this does not establish that the network learned location or uncertainty representations.
+
+**Next step:** Freeze the predictive and reconstruction GRUs, train identical linear location decoders, and compare their performance on held-out trajectories.

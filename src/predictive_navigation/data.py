@@ -55,3 +55,17 @@ def make_dataset(world, rng, n_trajectories, moves=20):
         "states": states,
     }
 
+
+def learning_targets(observations, objective):
+    #Select targets for prediction or reconstruction
+
+    if observations.ndim != 2 or observations.shape[1] < 2:
+        raise ValueError("Expected observation sequences of length >= 2")
+
+    if objective == "predictive":
+        return observations[:, 1:]
+
+    if objective == "reconstruction":
+        return observations[:, :-1]
+
+    raise ValueError(f"Unknown objective: {objective}")

@@ -7,6 +7,7 @@ from predictive_navigation.data import (
     make_dataset,
 )
 from predictive_navigation.environment import RingWorld
+from predictive_navigation.data import learning_targets
 
 
 def test_dataset_shapes():
@@ -86,3 +87,28 @@ def test_invalid_dataset_size():
         make_dataset(
             world, np.random.default_rng(42), 0
         )
+
+
+def test_learning_targets():
+    observations = np.array([[0, 1, 0, 2]])
+
+    predictive = learning_targets(
+        observations, "predictive"
+    )
+    reconstruction = learning_targets(
+        observations, "reconstruction"
+    )
+
+    np.testing.assert_array_equal(
+        predictive, [[1, 0, 2]]
+    )
+    np.testing.assert_array_equal(
+        reconstruction, [[0, 1, 0]]
+    )
+
+
+def test_invalid_learning_objective():
+    observations = np.array([[0, 1, 2]])
+
+    with pytest.raises(ValueError):
+        learning_targets(observations, "unknown")
